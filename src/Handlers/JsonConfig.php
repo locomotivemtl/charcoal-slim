@@ -2,9 +2,9 @@
 
 namespace Charcoal\Slim\Handlers;
 
-use Charcoal\Config\GenericConfig;
+use Charcoal\Config\AbstractConfig;
 
-class JsonConfig extends GenericConfig
+class JsonConfig extends AbstractConfig
 {
     /**
      * @var string

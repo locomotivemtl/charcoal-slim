@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Handlers;
 
-use Charcoal\Config\GenericConfig;
+use Charcoal\Config\AbstractConfig;
 
-class RedirectionConfig extends GenericConfig
+class RedirectionConfig extends AbstractConfig
 {
     /**
      * @var string

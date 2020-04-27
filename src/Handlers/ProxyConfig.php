@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Handlers;
 
-use Charcoal\Config\GenericConfig;
+use Charcoal\Config\AbstractConfig;
 
-class ProxyConfig extends GenericConfig
+class ProxyConfig extends AbstractConfig
 {
     /**
      * @var string

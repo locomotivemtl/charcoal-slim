@@ -2,9 +2,9 @@
 
 namespace Charcoal\Slim\Handlers;
 
-use Charcoal\Config\GenericConfig;
+use Charcoal\Config\AbstractConfig;
 
-class ViewConfig extends GenericConfig
+class ViewConfig extends AbstractConfig
 {
     /**
      * @var string
