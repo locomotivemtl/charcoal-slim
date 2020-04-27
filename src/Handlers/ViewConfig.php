@@ -18,36 +18,8 @@ class ViewConfig extends GenericConfig
     protected $engine;
 
     /**
-     * @var string
-     */
-    protected $ident;
-
-    /**
      * The template to render.
      * @var string|null
      */
     protected $template;
-
-
-    /**
-     * @return string
-     */
-    public function getTemplate(): string
-    {
-        if (!$this->template) {
-            return $this->get('ident');
-        }
-        return $this->template;
-    }
-
-    /**
-     * @return string
-     */
-    public function getController(): string
-    {
-        if (!$this->controller) {
-            return $this->get('template');
-        }
-        return $this->controller;
-    }
 }

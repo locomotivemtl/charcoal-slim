@@ -11,11 +11,6 @@ class RedirectionConfig extends GenericConfig
     /**
      * @var string
      */
-    protected $ident;
-
-    /**
-     * @var string
-     */
     protected $target;
 
     /**

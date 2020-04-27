@@ -41,9 +41,6 @@ class RouteMapper
             if (!isset($routeDefinition['methods'])) {
                 $routeDefinition['methods'] = constant($handlerClass . '::DEFAULT_METHODS');
             }
-            if (!isset($routeDefinition['route'])) {
-                $routeDefinition['route'] = '/' . ltrim($ident, '/');
-            }
             $app->map($routeDefinition['methods'], $routeDefinition['route'], $handlerClass)
                 ->setName($ident)
                 ->add(
