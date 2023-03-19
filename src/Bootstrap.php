@@ -4,49 +4,42 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim;
 
-// From 'slim/slim'
-use Slim\App;
-use Slim\Factory\AppFactory;
-// From 'pimple/pimple'
-use Pimple\Container;
-use Pimple\Psr11\Container as Psr11Container;
-// From 'locomotivemtl/charcoal-config'
 use Charcoal\Config\ConfigInterface;
 use Charcoal\Config\GenericConfig as Config;
+use Pimple\Container;
+use Pimple\Psr11\Container as Psr11Container;
+use Slim\App;
+use Slim\Factory\AppFactory;
+
 
 /**
  * Bootstrap a Slim 4 App
  */
 class Bootstrap
 {
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
     /**
      * @var callable[]
      */
-    private $configCallbacks = [];
+    private array $configCallbacks = [];
 
     /**
      * @var callable[]
      */
-    private $containerCallbacks = [];
+    private array $containerCallbacks = [];
 
     /**
      * @var callable[]
      */
-    private $bootstrapCallbacks = [];
+    private array $bootstrapCallbacks = [];
 
     /**
      * @var callable[]
      */
-    private $appCallbacks = [];
+    private array $appCallbacks = [];
 
-    /**
-     * @param ConfigInterface|null $config
-     */
+
     public function __construct(?ConfigInterface $config = null)
     {
         $this->container = new Container(
@@ -56,9 +49,6 @@ class Bootstrap
         );
     }
 
-    /**
-     * @return App
-     */
     public function __invoke(): App
     {
         while ($configCallback = array_shift($this->configCallbacks)) {
@@ -93,45 +83,26 @@ class Bootstrap
         return $app;
     }
 
-    /**
-     * @param callable $callback
-     * @return void
-     */
     public function addConfig(callable $callback): void
     {
         $this->configCallbacks[] = $callback;
     }
 
-    /**
-     * @param callable $callback
-     * @return void
-     */
     public function addBootstrap(callable $callback): void
     {
         $this->bootstrapCallbacks[] = $callback;
     }
 
-    /**
-     * @param callable $callback
-     * @return void
-     */
     public function addContainer(callable $callback): void
     {
         $this->containerCallbacks[] = $callback;
     }
 
-    /**
-     * @param callable $callback
-     * @return void
-     */
     public function addApp(callable $callback): void
     {
         $this->appCallbacks[] = $callback;
     }
 
-    /**
-     * @return Container
-     */
     public function getContainer(): Container
     {
         return $this->container;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Handlers;
 
-// From 'psr/http-message' (PSR-7)
+use Charcoal\Slim\Exceptions\RouteException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -15,14 +15,16 @@ class Redirection
 {
     public const DEFAULT_METHODS = ['GET'];
 
-    /**
-     * @param Request $request A PSR-7 compatible Request instance.
-     * @param Response $response A PSR-7 compatible Response instance.
-     * @return Response
-     */
-    public function __invoke(Request $request, Response $response)
+
+    public function __invoke(Request $request, Response $response): Response
     {
         $config = new RedirectionConfig($request->getAttribute('routeDefinition'));
+
+        if (!$config->has('target')) {
+            throw new RouteException(
+                'Redirection target not defined in route definition.'
+            );
+        }
 
         return $response
             ->withHeader('Location', $config->get('target'))

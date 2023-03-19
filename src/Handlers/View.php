@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Handlers;
 
-// From 'psr/http-message' (PSR-7)
+use Charcoal\Slim\Exceptions\RouteException;
+use Charcoal\Slim\Utils\ClassResolver;
+use Charcoal\View\Renderer;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-// From 'psr/container' (PSR-11)
-use Psr\Container\ContainerInterface;
-// From 'locomotivemtl/charcoal-view'
-use Charcoal\View\Renderer;
-use Charcoal\Slim\Utils\ClassResolver;
 
 /**
  * View Route PSR-7 Handler.
@@ -20,51 +18,45 @@ class View
 {
     public const DEFAULT_METHODS = ['GET'];
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * @var array<string|array|callable>
      */
-    private $views;
+    private array $views;
 
-    /**
-     * @var Renderer
-     */
-    private $renderer;
+    private Renderer $renderer;
 
-    /**
-     * @var ClassResolver
-     */
-    private $resolver;
+    private ClassResolver $resolver;
 
-    /**
-     * @param ContainerInterface $container PSR-11 DI Container.
-     */
     public function __construct(ContainerInterface $container)
     {
         // Keep a copy of the container to instantiate the view controller
         $this->container = $container;
-        $this->views = $container->get('app/contexts');
+        $this->views = $container->has('app/contexts') ? $container->get('app/contexts') : [];
         $this->renderer = $container->get('view/renderer');
         $this->resolver = new ClassResolver();
     }
 
-    /**
-     * @param Request $request A PSR-7 compatible Request instance.
-     * @param Response $response A PSR-7 compatible Response instance.
-     * @return Response
-     */
     public function __invoke(Request $request, Response $response): Response
     {
         $config = new ViewConfig($request->getAttribute('routeDefinition'));
         $request = $request->withoutAttribute('routeDefinition');
 
+        if (!$config->has('template')) {
+            throw new RouteException(
+                'View template not defined in route definition.'
+            );
+        }
+
         $viewController = $this->getControllerFromConfig($config);
 
         if (is_string($viewController)) {
+            if (!class_exists($viewController)) {
+                throw new RouteException(
+                    sprintf('View controller "%s" is invalid.', $viewController)
+                );
+            }
             $viewController = new $viewController($this->container);
             $context = $viewController($request, $response);
         } elseif (is_array($viewController)) {
@@ -79,13 +71,12 @@ class View
     }
 
     /**
-     * @param ViewConfig $config
-     * @return array|mixed|string
+     * @return array|callable|string
      */
     private function getControllerFromConfig(ViewConfig $config)
     {
-        if ($config->has('controller')) {
-            $controller = $config->get('controller');
+        if ($config->has('view')) {
+            $controller = $config->get('view');
             if (isset($this->views[$controller])) {
                 $viewController = $this->views[$controller];
             } else {

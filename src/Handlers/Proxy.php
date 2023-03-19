@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Handlers;
 
-// From 'psr/http-message' (PSR-7)
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-// From 'psr/container' (PSR-11)
-use Psr\Container\ContainerInterface;
-// From 'guzzlehttp/guzzle'
+use Charcoal\Slim\Exceptions\RouteException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request as GuzzleRequest;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 
 /**
  * Proxy Route Handler.
@@ -21,14 +19,8 @@ class Proxy
 {
     public const DEFAULT_METHODS = ['GET', 'POST'];
 
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
-    /**
-     * @param ContainerInterface $container PSR-11 DI Container.
-     */
     public function __construct(ContainerInterface $container)
     {
         if ($container->has('app/http-client')) {
@@ -38,15 +30,16 @@ class Proxy
         }
     }
 
-    /**
-     * @param Request $request A PSR-7 compatible Request instance.
-     * @param Response $response A PSR-7 compatible Response instance.
-     * @return Response
-     */
     public function __invoke(Request $request, Response $response): Response
     {
         $config = new ProxyConfig($request->getAttribute('routeDefinition'));
         $request = $request->withoutAttribute('routeDefinition');
+
+        if (!$config->has('url')) {
+            throw new RouteException(
+                'Proxy URL not defined in route definition.'
+            );
+        }
 
         $method = $config->has('proxyMethod') ? $config->get('proxyMethod') : $request->getMethod();
         $target = new GuzzleRequest($method, $config->get('url'));

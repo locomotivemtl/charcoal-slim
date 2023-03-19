@@ -7,19 +7,17 @@ use Charcoal\Config\AbstractConfig;
 class ViewConfig extends AbstractConfig
 {
     /**
-     * @var string
+     * The view controller.
      */
-    protected $controller;
+    protected string $view;
 
     /**
-     * The view engine to use to load and render the template.
-     * @var string
+     * The type of engine (mustache, twig, etc.)
      */
-    protected $engine;
+    protected string $engine;
 
     /**
-     * The template to render.
-     * @var string|null
+     * The template identifier.
      */
-    protected $template;
+    protected ?string $template;
 }

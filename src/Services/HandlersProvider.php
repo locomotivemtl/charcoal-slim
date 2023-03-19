@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Services;
 
-// From 'pimple/pimple'
-use Pimple\{
-    Container,
-    ServiceProviderInterface
-};
 use Charcoal\Slim\Handlers\{
     Controller,
     Json,
     Proxy,
     Redirection,
     View
+};
+use Pimple\{
+    Container,
+    ServiceProviderInterface
 };
 
 /**

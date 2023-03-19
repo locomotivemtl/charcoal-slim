@@ -8,20 +8,14 @@ use Charcoal\Config\AbstractConfig;
 
 class ProxyConfig extends AbstractConfig
 {
-    /**
-     * @var string
-     */
-    protected $url;
+    protected string $url;
 
     /**
      * Guzzle client request options
      * @var array<mixed>
      * @see http://docs.guzzlephp.org/en/latest/request-options.html
      */
-    protected $requestOptions = [];
+    protected array $requestOptions = [];
 
-    /**
-     * @var string
-     */
-    protected $proxyMethod;
+    protected string $proxyMethod;
 }

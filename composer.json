@@ -14,21 +14,21 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.5",
-        "locomotivemtl/charcoal-config": "^0.10",
-        "locomotivemtl/charcoal-view": "^0.4",
-        "pimple/pimple": "^3.3",
-        "slim/psr7": "^1.0",
-        "slim/slim": "^4.5"
+        "charcoal/config": "^0.10",
+        "charcoal/view": "^0.4",
+        "guzzlehttp/guzzle": "^7.5",
+        "pimple/pimple": "^3.5",
+        "slim/psr7": "^1.6",
+        "slim/slim": "^4.11"
     },
     "require-dev": {
-        "php-coveralls/php-coveralls": "^2.0",
-        "phpstan/phpstan": "^0.12",
+        "php-coveralls/php-coveralls": "^2.5",
+        "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^7.5",
-        "squizlabs/php_codesniffer": "^3.5",
-        "vimeo/psalm": "^3.11"
+        "squizlabs/php_codesniffer": "^3.7",
+        "vimeo/psalm": "^3.18"
     },
     "autoload": {
         "psr-4": {
@@ -37,7 +37,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Charcoal\\Tests\\": "tests/Charcoal"
+            "Charcoal\\Slim\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -48,12 +48,14 @@
             "@phplint",
             "@phpcs",
             "@phpunit",
-            "@phpstan"
+            "@phpstan",
+            "@psalm"
         ],
         "phplint": "find src tests -type f -name '*.php' -print0 | xargs -0 -n1 -P8 php -l | grep -v '^No syntax errors detected'; test $? -eq 1",
         "phpcs": "php vendor/bin/phpcs",
         "phpcbf": "php vendor/bin/phpcbf",
         "phpunit": "php vendor/bin/phpunit --coverage-text",
-        "phpstan": "php vendor/bin/phpstan analyze --level=5 src"
+        "phpstan": "php vendor/bin/phpstan analyze --level=5 src",
+        "psalm": "php vendor/bin/psalm --config=psalm.xml src"
     }
 }

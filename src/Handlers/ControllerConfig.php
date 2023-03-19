@@ -8,8 +8,5 @@ use Charcoal\Config\AbstractConfig;
 
 class ControllerConfig extends AbstractConfig
 {
-    /**
-     * @var string
-     */
-    protected $controller;
+    protected string $controller;
 }

@@ -8,13 +8,8 @@ use Charcoal\Config\AbstractConfig;
 
 class RedirectionConfig extends AbstractConfig
 {
-    /**
-     * @var string
-     */
-    protected $target;
+    protected string $target;
 
-    /**
-     * @var int
-     */
-    protected $code = 302;
+
+    protected int $code = 302;
 }

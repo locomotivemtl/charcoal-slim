@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Charcoal\Slim\Handlers;
 
 // From 'psr/http-message' (PSR-7)
+use Charcoal\Slim\Exceptions\RouteException;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 // From 'psr/container' (PSR-11)
@@ -18,51 +19,48 @@ class Json
 {
     public const DEFAULT_METHODS = ['POST'];
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
     /**
      * @var array<string|array|callable>
      */
-    private $contexts;
+    private array $contexts;
 
-    /**
-     * @var ClassResolver
-     */
-    private $resolver;
+    private ClassResolver $resolver;
 
-    /**
-     * @param ContainerInterface $container PSR-11 DI Container.
-     */
     public function __construct(ContainerInterface $container)
     {
         // Keep a copy of the container to instantiate the data controller
         $this->container = $container;
-        $this->contexts = $container->get('app/contexts');
+        $this->contexts = $container->has('app/contexts') ? $container->get('app/contexts') : [];
         $this->resolver = new ClassResolver();
     }
 
-    /**
-     * @param Request $request A PSR-7 compatible Request instance.
-     * @param Response $response A PSR-7 compatible Response instance.
-     * @return Response
-     */
     public function __invoke(Request $request, Response $response): Response
     {
         $config = new JsonConfig($request->getAttribute('routeDefinition'));
         $request = $request->withoutAttribute('routeDefinition');
 
-        $dataController = $this->getControllerFromConfig($config);
+        if (!$config->has('context')) {
+            throw new RouteException(
+                'JSON context not defined in route definition.'
+            );
+        }
+
+        $dataController = $this->getContextFromConfig($config);
 
         if (is_string($dataController)) {
+            if (!class_exists($dataController)) {
+                throw new RouteException(
+                    sprintf('JSON context controller "%s" is invalid.', $dataController)
+                );
+            }
             $dataController = new $dataController($this->container);
             $context = $dataController($request, $response);
-        } elseif (is_array($dataController)) {
-            $context = $dataController;
-        } else {
+        } elseif (is_callable($dataController)) {
             $context = $dataController($request, $response);
+        } else {
+            $context = $dataController;
         }
 
         $response->getBody()->write(json_encode($context));
@@ -72,19 +70,18 @@ class Json
     }
 
     /**
-     * @param JsonConfig $config
-     * @return array|mixed|string
+     * @return array|callable|string
      */
-    private function getControllerFromConfig(JsonConfig $config)
+    private function getContextFromConfig(JsonConfig $config)
     {
-        if ($config->has('controller')) {
-            if (isset($this->contexts[$config->get('controller')])) {
-                $dataController = $this->contexts[$config->get('controller')];
+        if (is_string($config->get('context'))) {
+            if (isset($this->contexts[$config->get('context')])) {
+                $dataController = $this->contexts[$config->get('context')];
             } else {
-                $dataController = $this->resolver->resolve($config->get('controller'));
+                $dataController = $this->resolver->resolve($config->get('context'));
             }
         } else {
-            $dataController = [];
+            $dataController = $config->get('context');
         }
 
         return $dataController;

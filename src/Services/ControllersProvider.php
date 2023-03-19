@@ -4,23 +4,20 @@ declare(strict_types=1);
 
 namespace Charcoal\Slim\Services;
 
-// From 'pimple/pimple'
-use Pimple\Container;
-use Pimple\ServiceProviderInterface;
+use Pimple\{
+    Container,
+    ServiceProviderInterface
+};
 
 /**
  *
  */
 class ControllersProvider implements ServiceProviderInterface
 {
-    /**
-     * @param Container $container
-     * @return void
-     */
     public function register(Container $container): void
     {
         /**
-         * @return array
+         *
          */
         $container['app/controllers'] = function (): array {
             return [];
@@ -38,7 +35,6 @@ class ControllersProvider implements ServiceProviderInterface
          * public function __invoke(Request $request, Response $response) : array;
          * ```
          *
-         * @return array
          */
         $container['app/contexts'] = function (): array {
             return [];
