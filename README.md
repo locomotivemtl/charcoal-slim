@@ -28,7 +28,7 @@ There are 4 types of callback methods that can be added, depending on which obje
 
 - **Config** callbacks can be added with `$bootstrap->addConfig(function (\Charcoal\Config\ConfigInterface $config) : \Charcoal\Config\ConfigInterface { /* */ });`
   - This is how to add custom configuration to an app, and would most likely be used for every project, typically to load the JSON (and php) config files.
-- **Container** callbacks can be added with `$bootstrap->addContainer(function (\Pimple\Container $contianer) : \Pimple\Container { /* */ });`
+- **Container** callbacks can be added with `$bootstrap->addContainer(function (\Pimple\Container $container) : \Pimple\Container { /* */ });`
   - This is how to register custom service providers on the Pimple DI container.
 - **Bootstrap** callbacks can be added with `$bootstrap->addBootstrap(function (\Charcoal\Slim\Bootstrap $bootstrap) : \Charcoal\Slim\Bootstrap { /* */ });`
   - This is how to add Charcoal modules or any other system that needs to add more config, container or app callbacks to the process.
@@ -183,7 +183,7 @@ $ composer test
 
 ### Coding Style
 
-The charcoal-cache module follows the Charcoal coding-style:
+The charcoal-slim module follows the Charcoal coding-style:
 
 -   [_PSR-4_][psr-4], autoloading is therefore provided by _Composer_.
 -   [_PSR-12_][psr-12]
