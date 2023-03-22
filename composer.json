@@ -14,10 +14,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.4",
+        "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "charcoal/config": "^0.10",
-        "charcoal/view": "^0.4",
+        "charcoal/config": "*",
+        "charcoal/view": "*",
         "guzzlehttp/guzzle": "^7.5",
         "pimple/pimple": "^3.5",
         "slim/psr7": "^1.6",
@@ -47,7 +47,11 @@
         "tests": [
             "@phplint",
             "@phpcs",
-            "@phpunit",
+            "@phpunit"
+        ],
+        "validate": [
+            "@phplint",
+            "@phpcs",
             "@phpstan",
             "@psalm"
         ],
